@@ -1,31 +1,38 @@
 <?php
 
-$target = "physiqonomics.com";
-echo "FOCKING TEST MATE";
+$target = "https://news.ycombinator.com";
 $uri = $_SERVER['REQUEST_URI'];
 
 $curl = curl_init();
 
-$url = "https://" . $target . $uri;
-echo $url;
+$url = $target . $uri;
 
 curl_setopt($curl, CURLOPT_URL, $url);
 curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-$result = curl_exec($curl);
+$result_curl = curl_exec($curl);
 
-//CHANGE TO DOM
-$result = preg_replace('/Aadam/', 'COCKSUCKER', $result);
-$pattern = '/href="https:\/\/physiqonomics\.com/';
-$result = preg_replace($pattern, 'href="', $result);
+$pattern = '/src="/';
+$result_curl = preg_replace($pattern, 'src="https://news.ycombinator.com/', $result_curl);
+$pattern = '/css" href="/';
+$result_curl = preg_replace($pattern, 'css" href="https://news.ycombinator.com/', $result_curl);
+
 
 $dom = new DOMDocument();
-@ $dom->loadHTML($result, LIBXML_HTML_NODEFDTD);
+@ $dom->loadHTML(mb_convert_encoding($result_curl, 'HTML-ENTITIES', 'UTF-8'));
 
-foreach ($dom->getElementsByTagName('p') as $data) {
-    $data->nodeValue = preg_replace('/\b\w{6}\b/', ':$1', $data->nodeValue);
+$xp    = new DOMXPath($dom);
+$nodes = $xp->query('/html/body//text()[
+    not(ancestor::script) and
+    not(ancestor::style) and
+    not(normalize-space(.) = "")
+]');
+
+foreach($nodes as $node) {
+    $node->textContent = preg_replace('/\b\w{6}\b/', '\0™', $node->textContent);
 }
+
 $result = $dom->saveHTML();
 
 echo $result;
