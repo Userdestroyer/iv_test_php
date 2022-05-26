@@ -16,8 +16,8 @@ function curl($url){
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     
     $result_curl = curl_exec($curl);
-    
-    $html = str_get_html($result_curl);
+
+    //$html = str_get_html($result_curl);
 
     //$result_curl = preg_replace('/>([^><)]*)</', '>\0AAA<', $result_curl);
     //$re = '/>([^><)]*)</';
