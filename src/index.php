@@ -13,10 +13,11 @@ curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 $result_curl = curl_exec($curl);
 
-$pattern = '/src="/';
-$result_curl = preg_replace($pattern, 'src="https://news.ycombinator.com/', $result_curl);
-$pattern = '/css" href="/';
-$result_curl = preg_replace($pattern, 'css" href="https://news.ycombinator.com/', $result_curl);
+//REFACTOR
+$pattern_src = '/src="/';
+$result_curl = preg_replace($pattern_src, 'src="https://news.ycombinator.com/', $result_curl);
+$pattern_css = '/css" href="/';
+$result_curl = preg_replace($pattern_css, 'css" href="https://news.ycombinator.com/', $result_curl);
 
 
 $dom = new DOMDocument();
