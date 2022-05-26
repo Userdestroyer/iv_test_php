@@ -3,12 +3,12 @@ services:
   php:
     image: php:8.0.5-fpm-alpine
     volumes:
-      - './src:/var/www/html'
+      - './:/var/www/html'
 
   nginx:
     image: nginx:latest
     ports:
       - 80:80
     volumes:
-      - './src:/var/www/html'
+      - './:/var/www/html'
       - './docker/nginx/conf.d:/etc/nginx/conf.d'
