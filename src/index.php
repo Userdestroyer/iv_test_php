@@ -3,44 +3,51 @@
 //SET TARGET
 $target = "https://news.ycombinator.com";
 $uri = $_SERVER['REQUEST_URI'];
-
-$curl = curl_init();
-
 $url = $target . $uri;
 
-curl_setopt($curl, CURLOPT_URL, $url);
-curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+//curl($url);
+dom($url);
 
-$result_curl = curl_exec($curl);
+function curl($url){
+    $curl = curl_init();
 
-//SWAP STYLES
-$pattern_src = '/src="/';
-$result_curl = preg_replace($pattern_src, 'src="https://news.ycombinator.com/', $result_curl);
-$pattern_css = '/css" href="/';
-$result_curl = preg_replace($pattern_css, 'css" href="https://news.ycombinator.com/', $result_curl);
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    
+    $result_curl = curl_exec($curl);
 
+    //$result_curl = preg_replace('/>([^><)]*)</m', '\0AAA', $result_curl);
+    // $re = '/>([^><)]*)</';
+    // preg_match_all($re, $result_curl, $matches);
+    // print_r($matches);
 
-$dom = new DOMDocument();
-@ $dom->loadHTML(mb_convert_encoding($result_curl, 'HTML-ENTITIES', 'UTF-8'));
+    echo $result_curl;
 
-//GET PATH TO TEXT
-$xp    = new DOMXPath($dom);
-$nodes = $xp->query('/html/body//text()[
-    not(ancestor::script) and
-    not(ancestor::style) and
-    not(normalize-space(.) = "")
-]');
-
-//ITERATE THROUGH TEXT NODES
-foreach($nodes as $node) {
-    $node->textContent = preg_replace('/\b\w{6}\b/', '\0™', $node->textContent);
+    curl_close($curl);
 }
 
-$result = $dom->saveHTML();
+function dom($url){
 
-echo $result;
+    $dom = new DOMDocument();
+    //$dom->loadHTML(mb_convert_encoding($result_curl, 'HTML-ENTITIES', 'UTF-8'));
+    @ $dom->loadHTMLFile($url, LIBXML_HTML_NOIMPLIED|LIBXML_HTML_NODEFDTD);
+    libxml_use_internal_errors(true);
+    // //GET PATH TO TEXT
+    // $xp    = new DOMXPath($dom);
+    // $nodes = $xp->query('/html/body//text()[
+    //     not(ancestor::script) and
+    //     not(ancestor::style) and
+    //     not(normalize-space(.) = "")
+    // ]');
 
-curl_close($curl);
+    // //ITERATE THROUGH TEXT NODES
+    // foreach($nodes as $node) {
+    //     $node->textContent = preg_replace('/\b\w{6}\b/', '\0™', $node->textContent);
+    // }
+
+    $result = $dom->saveHTML();
+    echo $result;
+}
 
 ?>
