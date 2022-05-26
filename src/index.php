@@ -1,5 +1,6 @@
 <?php
 
+//SET TARGET
 $target = "https://news.ycombinator.com";
 $uri = $_SERVER['REQUEST_URI'];
 
@@ -13,7 +14,7 @@ curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 $result_curl = curl_exec($curl);
 
-//REFACTOR
+//SWAP STYLES
 $pattern_src = '/src="/';
 $result_curl = preg_replace($pattern_src, 'src="https://news.ycombinator.com/', $result_curl);
 $pattern_css = '/css" href="/';
@@ -23,6 +24,7 @@ $result_curl = preg_replace($pattern_css, 'css" href="https://news.ycombinator.c
 $dom = new DOMDocument();
 @ $dom->loadHTML(mb_convert_encoding($result_curl, 'HTML-ENTITIES', 'UTF-8'));
 
+//GET PATH TO TEXT
 $xp    = new DOMXPath($dom);
 $nodes = $xp->query('/html/body//text()[
     not(ancestor::script) and
@@ -30,6 +32,7 @@ $nodes = $xp->query('/html/body//text()[
     not(normalize-space(.) = "")
 ]');
 
+//ITERATE THROUGH TEXT NODES
 foreach($nodes as $node) {
     $node->textContent = preg_replace('/\b\w{6}\b/', '\0™', $node->textContent);
 }
