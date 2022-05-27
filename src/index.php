@@ -6,7 +6,6 @@ $uri = $_SERVER['REQUEST_URI'];
 $url = $target . $uri;
 
 curl($url);
-//dom($url);
 
 function curl($url){
     $curl = curl_init();
@@ -56,8 +55,9 @@ function dom($content){
     }
 
     $result = $dom->saveHTML();
-
-    $result = preg_replace('/a href="https:\/\/news.ycombinator.com/u', 'a href=""', $result);
+    //Проблема тут
+    $result = preg_replace('/css" href="/', 'css" href="https://news.ycombinator.com/', $result);
+    //$result = preg_replace('/href="https:\/\/news.ycombinator.com/u', 'a href=""', $result);
     $result = preg_replace('/src="/', 'src="https://news.ycombinator.com/', $result);
 
     $result = html_entity_decode($result, ENT_COMPAT, 'UTF-8');
