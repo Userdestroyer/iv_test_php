@@ -50,7 +50,8 @@ function dom($content){
 
     //ITERATE THROUGH TEXT NODES
     foreach($nodes as $node) {
-        $re = '/(?<!\S)[\pL|А-Яа-яЕё]{6}(?!\S)/u';
+        //$re = '/(?<!\S)\pL{6}(?!\S)/u';
+        $re = '/(*UCP)\b\pL{6}(?!™)\b/u';
         $node->textContent = preg_replace($re, '\0™', $node->textContent);
     }
 
