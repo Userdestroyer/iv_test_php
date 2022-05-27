@@ -18,23 +18,13 @@ function curl($url){
     
     $result_curl = curl_exec($curl);
 
+    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    http_response_code($httpcode);
     $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
     $header = substr($result_curl, 0, $header_size);
     $content = substr($result_curl, $header_size);
-    //header($header);
 
-    //$html = str_get_html($result_curl);
-
-    //$result_curl = preg_replace('/>([^><)]*)</', '>\0AAA<', $result_curl);
-    //$re = '/>([^><)]*)</';
-    //preg_match_all($re, $result_curl, $matches);
-    //var_dump($matches);
-
-    //In case if matching words will be in the array
-    //$array_of_words = "/(?:|')(Trying|first|Проверочка|and|и|корень)(?:|')/g";
-    //preg_replace($array_of_words, $result_curl, $matches);
-    //echo $result_curl;
-
+    //echo $content;
     dom($content);
     curl_close($curl);
 }
@@ -60,12 +50,13 @@ function dom($content){
 
     //ITERATE THROUGH TEXT NODES
     foreach($nodes as $node) {
-        $node->textContent = preg_replace('/\b\w{6}\b/', '\0™', $node->textContent);
+        $re = '/(?<!\S)[\pL|А-Яа-яЕё]{6}(?!\S)/u';
+        $node->textContent = preg_replace($re, '\0™', $node->textContent);
     }
 
     $result = $dom->saveHTML();
 
-    //$result = preg_replace('/href="/', 'href="https://news.ycombinator.com/', $result);
+    $result = preg_replace('/a href="https:\/\/news.ycombinator.com/u', 'a href=""', $result);
     $result = preg_replace('/src="/', 'src="https://news.ycombinator.com/', $result);
 
     $result = html_entity_decode($result, ENT_COMPAT, 'UTF-8');
