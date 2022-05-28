@@ -55,10 +55,10 @@ function dom($content){
     }
 
     $result = $dom->saveHTML();
-    //Проблема тут
+
     $result = preg_replace('/css" href="/', 'css" href="https://news.ycombinator.com/', $result);
-    //$result = preg_replace('/href="https:\/\/news.ycombinator.com/u', 'a href=""', $result);
     $result = preg_replace('/src="/', 'src="https://news.ycombinator.com/', $result);
+    $result = preg_replace('/href="https:\/\/news.ycombinator.com"/u', 'a href="/"', $result);
 
     $result = html_entity_decode($result, ENT_COMPAT, 'UTF-8');
 
